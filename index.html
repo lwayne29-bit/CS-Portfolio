@@ -78,14 +78,15 @@
             },
             {
                 id: 4,
-                title: 'Simple Compiler/Interpreter',
+                title: 'TicTacToe by gemini',
                 icon: '⚙️',
-                summary: 'A basic interpreter for a custom, simple programming language.',
-                description: "Developed a parser and lexer using standard tools to process simple arithmetic expressions and variable assignments. This project provided deep insight into the structure of programming languages and the process of syntax analysis and execution, covering topics like Abstract Syntax Trees (AST).",
+                summary: 'This is a basic game of tictactoe that is created by gemini.',
+                description: "This game is super fun and easy to play! You will see at the bottom of the screen that when you click the green button, it brings you to the game it created.",
                 tech: ['C++', 'Lexing', 'Parsing', 'AST', 'Compiler'],
-                repo: '/screenshotshells.png',
+                repo: '/tictactoe.html',
                 screenshot: null, // No screenshot for this project
-                video: null
+                video: null,
+                
             }
         ];
 
@@ -101,7 +102,7 @@
          * @returns {string} The HTML string for the header.
          */
         function renderHeader(title) {
-            return `
+            return `http://127.0.0.1:3000/tictactoe.html
                 <header class="py-6 mb-8 border-b border-indigo-200">
                     <h1 class="text-4xl sm:text-5xl font-extrabold text-indigo-800 tracking-tight">${title}</h1>
                     <p class="mt-2 text-lg text-indigo-500">My comp science projects.</p>
@@ -263,7 +264,7 @@
                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
                            <path fill-rule="evenodd" d="M10 2a8 8 0 100 16 8 8 0 000-16zM5.3 8.3a1 1 0 011.4 0L10 11.6l3.3-3.3a1 1 0 011.4 1.4l-4 4a1 1 0 01-1.4 0l-4-4a1 1 0 010-1.4z" clip-rule="evenodd" />
                        </svg>
-                       View Repository (GitHub Link)
+                       
                     </a>
                 </div>
             `;
