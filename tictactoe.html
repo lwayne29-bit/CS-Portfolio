@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tic-Tac-Toe Game</title>
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom styles for the board grid */
+        .board-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-template-rows: repeat(3, 1fr);
+            gap: 4px; /* Small gap between cells */
+            width: 90vmin; /* Responsive width */
+            max-width: 400px; /* Max width for desktop */
+            aspect-ratio: 1 / 1; /* Keep it square */
+        }
+        .cell {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem; /* Large text for X and O */
+            font-family: 'Inter', sans-serif;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.1s;
+            user-select: none;
+            border-radius: 8px; /* Rounded corners for cells */
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+            background-color: #f7f7f9;
+        }
+        .cell:not(.disabled):hover {
+            background-color: #e5e7eb;
+            transform: scale(1.02);
+        }
+        .cell.disabled {
+            cursor: default;
+        }
+        /* Styling for the X (Primary Color) */
+        .text-x {
+            color: #ef4444; /* Red 500 */
+        }
+        /* Styling for the O (Secondary Color) */
+        .text-o {
+            color: #3b82f6; /* Blue 500 */
+        }
+        /* Highlight for win */
+        .win-cell {
+            background-color: #10b981 !important; /* Green 500 */
+            color: white !important;
+            animation: pulse-win 0.5s infinite alternate;
+        }
+        @keyframes pulse-win {
+            from { transform: scale(1.05); }
+            to { transform: scale(1.0); }
+        }
+        /* Styling for messages */
+        .message-box {
+            min-height: 4rem;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen p-4">
+
+    <div class="w-full max-w-lg bg-white p-6 md:p-10 rounded-xl shadow-2xl flex flex-col items-center space-y-6">
+
+        <h1 class="text-4xl font-extrabold text-gray-800 tracking-tight">Tic-Tac-Toe</h1>
+        
+        <!-- Status Message Box -->
+        <div id="statusMessage" class="message-box w-full text-center text-xl font-semibold text-gray-600 transition-colors duration-300">
+            Player X's Turn
+        </div>
+
+        <!-- Tic-Tac-Toe Board Container -->
+        <div id="gameBoard" class="board-grid shadow-xl bg-gray-300 p-2 rounded-lg">
+            <!-- Cells will be dynamically generated here -->
+        </div>
+
+        <!-- Control Buttons -->
+        <div class="flex space-x-4 pt-4">
+            <button id="resetButton" onclick="resetGame()" 
+                    class="px-6 py-3 bg-indigo-600 text-white font-bold rounded-lg shadow-md hover:bg-indigo-700 transition duration-150 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
+                Reset Game
+            </button>
+        </div>
+
+    </div>
+
+    <script>
+        // Game State Variables
+        let board = Array(9).fill(null); // The game board (0-indexed)
+        let currentPlayer = 'X';
+        let isGameActive = true;
+        const winningConditions = [
+            [0, 1, 2], [3, 4, 5], [6, 7, 8], // Rows
+            [0, 3, 6], [1, 4, 7], [2, 5, 8], // Columns
+            [0, 4, 8], [2, 4, 6]             // Diagonals
+        ];
+
+        // DOM Elements
+        const gameBoard = document.getElementById('gameBoard');
+        const statusMessage = document.getElementById('statusMessage');
+
+        /**
+         * Initializes the game by creating the 9 interactive cells.
+         */
+        function initializeBoard() {
+            gameBoard.innerHTML = ''; // Clear existing board
+            board.forEach((_, index) => {
+                const cell = document.createElement('div');
+                cell.classList.add('cell', 'disabled');
+                cell.setAttribute('data-index', index);
+                cell.addEventListener('click', handleCellClick);
+                gameBoard.appendChild(cell);
+            });
+            updateStatusMessage();
+            // Enable cells after initial render
+            document.querySelectorAll('.cell').forEach(cell => cell.classList.remove('disabled'));
+        }
+
+        /**
+         * Updates the message displayed to the user based on the current game state.
+         */
+        function updateStatusMessage() {
+            if (!isGameActive) {
+                return; // Message is already set to Win/Tie
+            }
+            statusMessage.textContent = `Player ${currentPlayer}'s Turn`;
+            if (currentPlayer === 'X') {
+                statusMessage.classList.remove('text-blue-600');
+                statusMessage.classList.add('text-red-600');
+            } else {
+                statusMessage.classList.remove('text-red-600');
+                statusMessage.classList.add('text-blue-600');
+            }
+        }
+
+        /**
+         * Checks if the current board state results in a win.
+         * @returns {Array|null} The winning combination indices or null if no win.
+         */
+        function checkWin() {
+            for (let i = 0; i < winningConditions.length; i++) {
+                const [a, b, c] = winningConditions[i];
+                if (board[a] && board[a] === board[b] && board[a] === board[c]) {
+                    return winningConditions[i]; // Return the winning combination
+                }
+            }
+            return null;
+        }
+
+        /**
+         * Checks if the game is a tie (no empty spots left).
+         * @returns {boolean} True if it's a tie.
+         */
+        function checkTie() {
+            return !board.includes(null);
+        }
+
+        /**
+         * Handles the click event on a board cell.
+         * @param {Event} event - The click event.
+         */
+        function handleCellClick(event) {
+            const cell = event.target;
+            const index = parseInt(cell.getAttribute('data-index'));
+
+            // Ignore if game is over or cell is already filled
+            if (!isGameActive || board[index] !== null) {
+                return;
+            }
+
+            // 1. Update board state and cell content
+            board[index] = currentPlayer;
+            cell.textContent = currentPlayer;
+            
+            // Add player-specific styling
+            cell.classList.remove('bg-f7f7f9');
+            cell.classList.add(currentPlayer === 'X' ? 'text-x' : 'text-o', 'disabled', 'shadow-inner', 'bg-gray-200');
+
+            // 2. Check for Win
+            const winCombo = checkWin();
+            if (winCombo) {
+                isGameActive = false;
+                statusMessage.textContent = `🏆 Player ${currentPlayer} WINS! 🏆`;
+                statusMessage.classList.remove('text-red-600', 'text-blue-600');
+                statusMessage.classList.add('text-green-600');
+                highlightWinningCells(winCombo);
+                return;
+            }
+
+            // 3. Check for Tie
+            if (checkTie()) {
+                isGameActive = false;
+                statusMessage.textContent = `🤝 It's a TIE! No one wins.`;
+                statusMessage.classList.remove('text-red-600', 'text-blue-600');
+                statusMessage.classList.add('text-yellow-600');
+                return;
+            }
+
+            // 4. Switch Player
+            currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+            updateStatusMessage();
+        }
+
+        /**
+         * Highlights the cells that form the winning combination.
+         * @param {Array<number>} combo - The indices of the winning cells.
+         */
+        function highlightWinningCells(combo) {
+            const cells = document.querySelectorAll('.cell');
+            combo.forEach(index => {
+                cells[index].classList.add('win-cell');
+            });
+            // Disable all cells to prevent further interaction
+            cells.forEach(cell => cell.classList.add('disabled'));
+        }
+
+        /**
+         * Resets the game state and board for a new game.
+         */
+        function resetGame() {
+            board = Array(9).fill(null);
+            currentPlayer = 'X';
+            isGameActive = true;
+
+            // Clear styling and content from all cells
+            document.querySelectorAll('.cell').forEach(cell => {
+                cell.textContent = '';
+                cell.className = 'cell'; // Reset all classes
+                cell.classList.remove('disabled'); // Re-enable click handler
+            });
+
+            // Re-apply base classes and initial styles
+            document.querySelectorAll('.cell').forEach(cell => {
+                cell.classList.add('cell', 'bg-f7f7f9');
+            });
+            
+            // Reset status message
+            statusMessage.classList.remove('text-green-600', 'text-yellow-600', 'text-blue-600');
+            statusMessage.classList.add('text-red-600');
+            updateStatusMessage();
+        }
+
+        // Start the game when the script loads
+        document.addEventListener('DOMContentLoaded', initializeBoard);
+    </script>
+</body>
+</html>
