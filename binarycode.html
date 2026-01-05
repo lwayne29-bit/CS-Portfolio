@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cyber-Pulse Binary Odometer</title>
+    <style>
+        :root {
+            --neon-pink: #ff00ff;
+            --neon-purple: #bc13fe;
+            --dark-void: #050005;
+            --btn-scale: 1;
+        }
+
+        * {
+            box-sizing: border-box;
+            user-select: none;
+        }
+
+        body {
+            background-color: var(--dark-void);
+            color: white;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+            transition: background-color 0.5s ease;
+        }
+
+        h1 {
+            text-transform: uppercase;
+            letter-spacing: 8px;
+            font-size: 2.5rem;
+            margin-bottom: 40px;
+            color: white;
+            text-shadow: 0 0 10px var(--neon-pink), 0 0 20px var(--neon-purple);
+        }
+
+        /* The Binary Display Container */
+        .odometer-wrap {
+            display: flex;
+            gap: 15px;
+            padding: 50px;
+            background: rgba(20, 0, 20, 0.8);
+            border: 4px solid #300030;
+            border-radius: 25px;
+            box-shadow: 0 0 60px rgba(0,0,0,1), inset 0 0 30px rgba(188, 19, 254, 0.2);
+            margin-bottom: 40px;
+        }
+
+        /* Individual Binary Slots */
+        .bit {
+            width: 80px;
+            height: 120px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(180deg, #1a001a 0%, #000 50%, #1a001a 100%);
+            font-size: 5rem;
+            font-weight: 900;
+            border-radius: 15px;
+            color: #2b002b;
+            border: 2px solid #400040;
+            transition: all 0.1s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        /* Active State (Value 1) */
+        .bit.active {
+            color: var(--neon-pink);
+            text-shadow: 0 0 20px var(--neon-pink), 0 0 40px var(--neon-purple);
+            border-color: var(--neon-pink);
+            transform: translateY(-8px);
+            box-shadow: 0 10px 20px rgba(255, 0, 255, 0.2);
+        }
+
+        /* Control Panel */
+        .controls {
+            display: flex;
+            gap: 25px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        button {
+            background: #000;
+            color: var(--neon-pink);
+            border: 2px solid var(--neon-purple);
+            padding: 20px 45px;
+            font-size: 1.3rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            transform: scale(var(--btn-scale));
+            box-shadow: 0 0 15px rgba(188, 19, 254, 0.3);
+            min-width: 180px;
+        }
+
+        button:hover {
+            background: var(--neon-pink);
+            color: black;
+            box-shadow: 0 0 40px var(--neon-pink);
+            transform: scale(calc(var(--btn-scale) * 1.05));
+        }
+
+        button:active {
+            transform: scale(calc(var(--btn-scale) * 0.95));
+        }
+
+        #stopBtn { color: #00ffff; border-color: #00ffff; }
+        #stopBtn:hover { background: #00ffff; box-shadow: 0 0 40px #00ffff; }
+
+        #resetBtn { color: #ff3333; border-color: #ff3333; }
+        #resetBtn:hover { background: #ff3333; box-shadow: 0 0 40px #ff3333; }
+
+        .stats-hud {
+            margin-top: 40px;
+            font-size: 1.5rem;
+            letter-spacing: 3px;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        #decimal-val {
+            font-size: 3.5rem;
+            color: var(--neon-pink);
+            text-shadow: 0 0 15px var(--neon-purple);
+            font-weight: bold;
+        }
+
+        /* Impact animation for high-speed counting */
+        @keyframes vibration {
+            0% { transform: translate(1px, 1px) rotate(0deg); }
+            20% { transform: translate(-1px, -1px) rotate(-0.5deg); }
+            40% { transform: translate(-2px, 0px) rotate(0.5deg); }
+            60% { transform: translate(2px, 1px) rotate(0deg); }
+            80% { transform: translate(1px, -1px) rotate(0.5deg); }
+            100% { transform: translate(-1px, 1px) rotate(-0.5deg); }
+        }
+
+        .engine-active {
+            animation: vibration 0.1s infinite;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Void Runner Odometer</h1>
+
+    <div id="display-frame" class="odometer-wrap">
+        <span class="bit">0</span><span class="bit">0</span><span class="bit">0</span><span class="bit">0</span>
+        <span class="bit">0</span><span class="bit">0</span><span class="bit">0</span><span class="bit">0</span>
+    </div>
+    
+    <div class="controls">
+        <button id="startBtn" onclick="startEngine()">Start</button>
+        <button id="stopBtn" onclick="stopEngine()">Stop</button>
+        <button id="resetBtn" onclick="resetSystem()">Reset</button>
+    </div>
+    
+    <div class="stats-hud">
+        DECIMAL SECTOR: <span id="decimal-val">0</span>
+    </div>
+
+    <script>
+        let counter = 0;
+        let scaleFactor = 1.0;
+        let timer = null;
+        const maxBits = 8;
+        const limit = Math.pow(2, maxBits); // 256
+
+        const decimalElement = document.getElementById('decimal-val');
+        const bits = document.querySelectorAll('.bit');
+        const frame = document.getElementById('display-frame');
+
+        function refreshDisplay() {
+            // Convert current number to 8-bit binary string
+            const binaryString = counter.toString(2).padStart(maxBits, '0');
+            
+            binaryString.split('').forEach((char, index) => {
+                const el = bits[index];
+                
+                // Only update if value changed to reduce DOM load during high speed
+                if (el.textContent !== char) {
+                    el.textContent = char;
+                    if (char === '1') {
+                        el.classList.add('active');
+                    } else {
+                        el.classList.remove('active');
+                    }
+                }
+            });
+
+            decimalElement.textContent = counter;
+        }
+
+        function runTick() {
+            counter = (counter + 1) % limit;
+            
+            // Interactive scaling: increase size slightly while running
+            scaleFactor += 0.003; 
+            document.documentElement.style.setProperty('--btn-scale', scaleFactor);
+            
+            refreshDisplay();
+        }
+
+        function startEngine() {
+            if (timer) return; // Already running
+            
+            frame.classList.add('engine-active');
+            // High speed interval (50ms = 20 increments per second)
+            timer = setInterval(runTick, 50);
+        }
+
+        function stopEngine() {
+            if (timer) {
+                clearInterval(timer);
+                timer = null;
+                frame.classList.remove('engine-active');
+            }
+        }
+
+        function resetSystem() {
+            stopEngine();
+            counter = 0;
+            scaleFactor = 1.0;
+            document.documentElement.style.setProperty('--btn-scale', scaleFactor);
+            refreshDisplay();
+            
+            // Visual feedback for reset
+            document.body.style.backgroundColor = "#200";
+            setTimeout(() => {
+                document.body.style.backgroundColor = "var(--dark-void)";
+            }, 150);
+        }
+
+        // Initialize display
+        refreshDisplay();
+    </script>
+</body>
+</html>
