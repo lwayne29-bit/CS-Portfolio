@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tic-Tac-Toe Pro</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .cell {
+            aspect-ratio: 1 / 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: clamp(2rem, 10vw, 4rem);
+            font-weight: 800;
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            background: white;
+        }
+        .cell:hover:not(.occupied) {
+            background: #f3f4f6;
+            transform: scale(0.98);
+        }
+        .cell.occupied {
+            cursor: default;
+        }
+        .win-animate {
+            animation: win-pulse 0.6s ease-in-out infinite alternate;
+        }
+        @keyframes win-pulse {
+            from { transform: scale(1); background-color: #10b981; color: white; }
+            to { transform: scale(1.05); background-color: #059669; color: white; }
+        }
+    </style>
+</head>
+<body class="bg-slate-900 text-white min-h-screen flex items-center justify-center p-4">
+
+    <div class="w-full max-w-md">
+        <div class="text-center mb-8">
+            <h1 class="text-5xl font-black mb-2 text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500">
+                TIC TAC TOE
+            </h1>
+            <div id="status" class="text-xl font-medium text-slate-400 h-8">
+                Player X's Turn
+            </div>
+        </div>
+
+        <div id="board" class="grid grid-cols-3 gap-3 bg-slate-700 p-3 rounded-2xl shadow-2xl border border-slate-600">
+            <!-- 9 Cells -->
+            <div class="cell rounded-xl text-slate-800" data-index="0"></div>
+            <div class="cell rounded-xl text-slate-800" data-index="1"></div>
+            <div class="cell rounded-xl text-slate-800" data-index="2"></div>
+            <div class="cell rounded-xl text-slate-800" data-index="3"></div>
+            <div class="cell rounded-xl text-slate-800" data-index="4"></div>
+            <div class="cell rounded-xl text-slate-800" data-index="5"></div>
+            <div class="cell rounded-xl text-slate-800" data-index="6"></div>
+            <div class="cell rounded-xl text-slate-800" data-index="7"></div>
+            <div class="cell rounded-xl text-slate-800" data-index="8"></div>
+        </div>
+
+        <div class="mt-8 flex justify-center">
+            <button id="reset" class="px-8 py-3 bg-blue-600 hover:bg-blue-500 font-bold rounded-full transition-all active:scale-95 shadow-lg flex items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"></path><path d="M21 3v5h-5"></path><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"></path><path d="M8 16H3v5"></path></svg>
+                Restart Game
+            </button>
+        </div>
+    </div>
+
+    <script>
+        const boardElement = document.getElementById('board');
+        const statusElement = document.getElementById('status');
+        const resetBtn = document.getElementById('reset');
+        const cells = document.querySelectorAll('.cell');
+
+        let currentPlayer = 'X';
+        let gameState = Array(9).fill('');
+        let gameActive = true;
+
+        const winConditions = [
+            [0, 1, 2], [3, 4, 5], [6, 7, 8],
+            [0, 3, 6], [1, 4, 7], [2, 5, 8],
+            [0, 4, 8], [2, 4, 6]
+        ];
+
+        function handleCellClick(e) {
+            const clickedCell = e.target;
+            const index = parseInt(clickedCell.getAttribute('data-index'));
+
+            if (gameState[index] !== '' || !gameActive) return;
+
+            gameState[index] = currentPlayer;
+            clickedCell.textContent = currentPlayer;
+            clickedCell.classList.add('occupied');
+            clickedCell.classList.add(currentPlayer === 'X' ? 'text-blue-600' : 'text-rose-600');
+
+            checkResult();
+        }
+
+        function checkResult() {
+            let roundWon = false;
+            let winningLine = [];
+
+            for (let condition of winConditions) {
+                const [a, b, c] = condition;
+                if (gameState[a] && gameState[a] === gameState[b] && gameState[a] === gameState[c]) {
+                    roundWon = true;
+                    winningLine = condition;
+                    break;
+                }
+            }
+
+            if (roundWon) {
+                statusElement.textContent = `Player ${currentPlayer} Wins!`;
+                statusElement.classList.replace('text-slate-400', 'text-green-400');
+                winningLine.forEach(idx => cells[idx].classList.add('win-animate'));
+                gameActive = false;
+                return;
+            }
+
+            if (!gameState.includes('')) {
+                statusElement.textContent = "Draw!";
+                statusElement.classList.replace('text-slate-400', 'text-yellow-400');
+                gameActive = false;
+                return;
+            }
+
+            currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+            statusElement.textContent = `Player ${currentPlayer}'s Turn`;
+        }
+
+        function restartGame() {
+            currentPlayer = 'X';
+            gameState = Array(9).fill('');
+            gameActive = true;
+            statusElement.textContent = "Player X's Turn";
+            statusElement.className = "text-xl font-medium text-slate-400 h-8";
+            cells.forEach(cell => {
+                cell.textContent = '';
+                cell.className = 'cell rounded-xl text-slate-800';
+            });
+        }
+
+        cells.forEach(cell => cell.addEventListener('click', handleCellClick));
+        resetBtn.addEventListener('click', restartGame);
+    </script>
+</body>
+</html>
