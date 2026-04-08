@@ -9,15 +9,17 @@
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #f8fafc; /* Tailwind slate-50 */
+            background-color: #f8fafc;
         }
-        /* Custom scrollbar for aesthetics */
+        /* Custom scrollbar */
         ::-webkit-scrollbar { width: 8px; }
         ::-webkit-scrollbar-thumb { background: #94a3b8; border-radius: 10px; }
         ::-webkit-scrollbar-thumb:hover { background: #64748b; }
-        .transition-opacity { transition: opacity 0.3s ease-in-out; }
         
-        /* Modern Aspect Ratio for Videos */
+        #app {
+            transition: opacity 0.3s ease-in-out;
+        }
+
         .video-container {
             aspect-ratio: 16 / 9;
             width: 100%;
@@ -25,12 +27,7 @@
             overflow: hidden;
             background: #000;
         }
-        .video-container iframe {
-            width: 100%;
-            height: 100%;
-        }
 
-        /* Styles for Interactive Tools */
         .converter-box {
             background: #f1f5f9;
             padding: 20px;
@@ -48,69 +45,61 @@
             font-family: monospace;
             margin-top: 10px;
         }
-        #colorPreview {
-            height: 100px;
-            width: 100%;
-            border-radius: 8px;
-            border: 1px solid #cbd5e1;
-            margin-top: 10px;
-            transition: background-color 0.2s;
-        }
     </style>
 </head>
 <body class="min-h-screen antialiased">
 
-    <div id="app" class="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8"></div>
+    <div id="app" class="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8 opacity-100"></div>
 
     <script>
-        // --- Combined Project Data (10 Projects) ---
+        // --- Combined Project Data (11 Projects) ---
         const projects = [
             {
                 id: 1,
                 title: 'Tic Tac Toe',
                 icon: '❌ ⭕',
-                summary: 'A fun game of Tic Tac Toe. Coding this taught me how to work with buttons and event listeners. One small mistake can ruin the logic!',
+                summary: 'A fun game of Tic Tac Toe. Coding this taught me how to work with buttons and event listeners.',
                 description: "This game is super fun and entertaining. I learned how to work with buttons and have different controls on each one of them. I also learned how to add notifiers and different commands like the X and O on the buttons for each turn. The notifiers were used for the pop ups when someone wins or loses.",
                 tech: ['Fun', 'Multiplayer', 'Logic', 'Win'],
-                repo: 'https://github.com/cs-projects/algo-viz',
+                repo: '#',
                 screenshot: "ScreenshotTicTacToe.png",
             },
             {
                 id: 2,
                 title: 'Clicker',
                 icon: '👇 💬',
-                summary: 'This app adds numbers to help you keep track of data. I learned how to use variables to store and increment values through code.',
+                summary: 'This app adds numbers to help you keep track of data.',
                 description: "This app allows you to add things, count, and just click around with the buttons. It is very useful when keeping track of a score in a game or just counting in general. Using the buttons and different commands I learned how to add values to the buttons to create a greater value added to it when pressed.",
                 tech: ['Control', 'Count', 'Data', 'Helpful'],
-                repo: 'https://github.com/cs-projects/chat-app',
+                repo: '#',
                 screenshot: "screenshotClicker.png",
             },
             {
                 id: 3,
                 title: 'Bop it Game',
                 icon: '🔨 🎮',
-                summary: 'A multi-mode game with different characters. I learned how to manage multiple screens and image sprites simultaneously.',
-                description: "This game is super interesting. It allows you to play with three different modes: summer, farm, and dessert. You have to click the image before time runs out! This taught me how to use many different image sprites, screens, buttons, and most importantly, the grids (table anagements) of the images. ",
+                summary: 'A multi-mode game with different characters. I learned how to manage multiple screens.',
+                description: "This game is super interesting. It allows you to play with three different modes: summer, farm, and dessert. You have to click the image before time runs out! This taught me how to use many different image sprites, screens, buttons, and most importantly, the grids (table arrangements) of the images.",
                 tech: ['Creative', 'Challenge', 'Game Dev', 'Sprites'],
-                repo: 'https://github.com/cs-projects/terrain-gen',
+                repo: '#',
                 screenshot: "screenshotshells.png",
             },
             {
                 id: 4,
                 title: 'TicTacToe by Gemini',
                 icon: '⚙️',
-                summary: 'A game created by Gemini. It includes a preview making it easy to play. I used AI to generate the logic for wins, losses, and ties.',
-                description: "This game is super fun and easy to play! You will see at the bottom of the screen that when you click the button, it brings you to the generated game. Google Gemini helped create this game of Tic Tac Toe to show a replicated version of real Tic Tac Toe to umderstand more of how it works and its code",
+                summary: 'A game created by Gemini. It includes a preview making it easy to play.',
+                description: "Google Gemini helped create this game of Tic Tac Toe to show a replicated version of real Tic Tac Toe to understand more of how it works and its code. I used AI to generate the logic for wins, losses, and ties.",
                 tech: ['AI Prompting', 'HTML5', 'Logic', 'Testing'],
-                repo: 'http://127.0.0.1:3000/tictactoegemini.html?serverWindowId=71c327f8-9a14-4908-9d94-1ac115dcaee9',
+                repo: '#',
                 screenshot: null,
             },
             {
                 id: 5,
                 title: 'Binary ASCII Converter by Gemini',
                 icon: '🔢 💻',
-                summary: 'Convert text into 1s and 0s and decode it back. This app was created with Gemini to help explore how computers represent human language.',
-                description: "This project explores how computers represent information. You can type any text to see its binary code, or paste binary code to see the hidden message. I asked gemini to create this to see how using different codes and uncoding it it really important to computers and how they really revolve around 1s and 0s ",
+                summary: 'Convert text into 1s and 0s and decode it back.',
+                description: "This project explores how computers represent information. You can type any text to see its binary code, or paste binary code to see the hidden message. I asked Gemini to create this to see how using different codes and encoding/decoding is really important to computers.",
                 tech: ['ASCII', 'Binary', 'JavaScript', 'Logic'],
                 repo: '#',
                 isConverter: true,
@@ -120,8 +109,8 @@
                 id: 6,
                 title: 'Information page: Binary & Computer Number Systems',
                 icon: '🏗️ 0️⃣',
-                summary: 'Binary and computer number systems are used as a mathematical language that only uses two states. Thats why we use the Binary system. There are many different base systems used when counting.',
-                description: "Computers use electricity in 'on' or 'off' states. This breaks down how we combine those states into complex numbers using different base systems.",
+                summary: 'Binary systems are the mathematical language of computers.',
+                description: "Computers use electricity in 'on' or 'off' states. This breaks down how we combine those states into complex numbers using different base systems like Binary and Hexadecimal.",
                 tech: ['Binary', 'Hexadecimal', 'Base-10', 'Logic'],
                 repo: '#',
                 screenshot: "screenshotBinarySystems.png",
@@ -130,8 +119,8 @@
                 id: 7,
                 title: 'Information page: Character Encoding & ASCII',
                 icon: '🔠 💾',
-                summary: 'Ever wonder how a computer knows "A" is 65? Well, "A" doesnt really exist',
-                description: "Since computers only speak in numbers (binary), we need a translation that tells the computer that when you see a certain number, making a capital letter 'A' on the screen. ",
+                summary: 'Ever wonder how a computer knows "A" is 65?',
+                description: "Since computers only speak in numbers (binary), we need a translation that tells the computer that when you see a certain number, it should display a capital letter 'A' on the screen.",
                 tech: ['Encoding', 'ASCII', 'UTF-8', 'Bytes'],
                 repo: '#',
                 screenshot: "screenshotASCII.png",
@@ -140,8 +129,8 @@
                 id: 8,
                 title: 'Information page: How Computers Create Images',
                 icon: '🖼️ 👾',
-                summary: 'Computers turn a grid of numbers into a visual image using pixels and resolution. A computer sees an image as a massive grid of numbers. the computer is folloing a numbers set of instructions ot create the color.',
-                description: "Digital images are just large grids of numbers called pixels. A pixel is the smallest unit of a digital image that can be controlled.",
+                summary: 'Computers turn a grid of numbers into a visual image using pixels.',
+                description: "Digital images are just large grids of numbers called pixels. A pixel is the smallest unit of a digital image that can be controlled. The computer follows a number set of instructions to create the color.",
                 tech: ['Pixels', 'Resolution', 'Raster', 'Compression'],
                 repo: '#',
                 screenshot: "cupcakescreenshot.png",
@@ -150,8 +139,8 @@
                 id: 9,
                 title: 'Information page: Color Values & Displays',
                 icon: '🌈 📺',
-                summary: 'RGB colors model how Red, Green, and Blue light create millions of unique shades. Computers create every color you see by mixing three primary colors of light. Each color is assigned a value from 0 to 255.',
-                description: "Each pixel on your screen is made of three tiny light sources. By using values from 0 to 255 for each color, we get the RGB system. This allows us to make many different colors by mixing different amounts of red, green, and blue light.",
+                summary: 'RGB colors model how Red, Green, and Blue light create millions of shades.',
+                description: "Each pixel on your screen is made of three tiny light sources. By using values from 0 to 255 for each color, we get the RGB system. This allows us to make many different colors by mixing different amounts of light.",
                 tech: ['RGB', 'Hex Codes', 'Hardware', 'Color Theory'],
                 repo: '#',
                 isColorTool: true,
@@ -161,23 +150,31 @@
                 id: 10,
                 title: 'Trivia App',
                 icon: '❓ 🧠',
-                summary: 'A fast-paced quiz app that tests your knowledge. This project helped me understand how use pictures different ways, use a drop down list, and make different types of game..',
-                description: "This Trivia App is an interactive quiz that asks questions and tracks your score. This project is great for learning how to use pictrues in different scenarios. I also learned how to update the screen text every time a new question appears, while still keeping the score and time.",
+                summary: 'A fast-paced quiz app that tests your knowledge.',
+                description: "This Trivia App is an interactive quiz that asks questions and tracks your score. I learned how to update the screen text every time a new question appears, while still keeping the score and time.",
                 tech: ['Quiz', 'Arrays', 'JavaScript', 'Knowledge'],
                 repo: '#',
                 screenshot: "triviascreenshot.png",
+            },
+            {
+                id: 11,
+                title: 'Logo App',
+                icon: '🎨 🖋️',
+                summary: 'A creative tool for designing digital logos using CSS shapes.',
+                description: "The Logo App focuses on layout and how computers render shapes using code. I learned how to use 'divs' and CSS properties like border-radius and transforms to create complex shapes from simple squares. It also taught me about the box model and layering elements using z-index.",
+                tech: ['CSS Shapes', 'Layout', 'Design', 'Frontend'],
+                repo: '#',
+                screenshot: "logoappscreenshot.png",
             }
         ];
 
-        let currentView = 'list';
-        let selectedProjectId = null;
         const app = document.getElementById('app');
 
         function renderHeader(title) {
             return `
                 <header class="py-6 mb-8 border-b border-indigo-200">
                     <h1 class="text-4xl sm:text-5xl font-extrabold text-indigo-800 tracking-tight">${title}</h1>
-                    <p class="mt-2 text-lg text-indigo-500">My Computer Science Portfolio.</p>
+                    <p class="mt-2 text-lg text-indigo-500">My Computer Science Portfolio</p>
                 </header>
             `;
         }
@@ -192,7 +189,7 @@
         window.binaryToText = () => {
             const input = document.getElementById('converterInput').value.trim().replace(/\s/g, '');
             if (!/^[01]+$/.test(input)) {
-                document.getElementById('converterOutput').innerText = "Error: Please enter only 1s and 0s.";
+                document.getElementById('converterOutput').innerText = "⚠️ Please enter only 1s and 0s.";
                 return;
             }
             const chunks = input.match(/.{1,8}/g);
@@ -203,14 +200,15 @@
         window.updateColor = (val) => {
             const box = document.getElementById('colorPreview');
             const label = document.getElementById('colorLabel');
-            box.style.backgroundColor = val;
+            if(box) box.style.backgroundColor = val;
             if(label) label.innerText = `Current Color: ${val}`;
         };
 
+        // --- View Rendering ---
         function renderProjectList(projectsToDisplay = projects) {
             const projectCards = projectsToDisplay.map(p => `
                 <div onclick="switchView('detail', ${p.id})"
-                     class="bg-white p-6 rounded-xl shadow-lg hover:shadow-2xl transition duration-300 ease-in-out transform hover:-translate-y-1 cursor-pointer border border-gray-100 flex flex-col justify-between">
+                     class="bg-white p-6 rounded-xl shadow-lg hover:shadow-2xl transition duration-300 transform hover:-translate-y-1 cursor-pointer border border-gray-100 flex flex-col justify-between">
                     <div>
                         <div class="text-3xl mb-3">${p.icon}</div>
                         <h2 class="text-xl font-bold text-gray-800 mb-2">${p.title}</h2>
@@ -229,8 +227,8 @@
                            placeholder="Search projects or technologies..."
                            class="w-full px-6 py-3 border border-indigo-300 rounded-lg shadow-inner focus:outline-none focus:ring-2 focus:ring-indigo-500 transition text-gray-700">
                 </div>
-                <main id="list-view" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    ${projectCards}
+                <main class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    ${projectCards || '<p class="text-gray-400 col-span-full text-center py-10">No projects found.</p>'}
                 </main>
             `;
         }
@@ -239,69 +237,64 @@
             const project = projects.find(p => p.id === id);
             if (!project) return;
             
-            const renderScreenshot = (url) => url ? `<h3 class="text-2xl font-semibold text-gray-700 mt-8 mb-3 border-b pb-2">Screenshot</h3><img src="${url}" class="w-full rounded-lg shadow-xl border border-gray-200" />` : '';
-            const renderVideo = (videoId) => videoId ? `<h3 class="text-2xl font-semibold text-gray-700 mt-8 mb-3 border-b pb-2">Video Demonstration</h3><div class="video-container"><iframe src="https://www.youtube.com/embed/${videoId}" frameborder="0" allowfullscreen></iframe></div>` : '';
-
-            // Tool HTML Injections
-            const converterHtml = project.isConverter ? `
-                <div class="converter-box">
-                    <h4 class="font-bold text-indigo-800 mb-2">Binary Converter Tool</h4>
-                    <textarea id="converterInput" class="w-full h-24 p-3 border rounded-lg font-mono mb-4 text-sm" placeholder="Enter text or 0101..."></textarea>
-                    <div class="flex gap-2">
-                        <button onclick="textToBinary()" class="bg-indigo-600 text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-indigo-700 flex-1">Text to Binary</button>
-                        <button onclick="binaryToText()" class="bg-green-600 text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-green-700 flex-1">Binary to Text</button>
-                    </div>
-                    <div id="converterOutput" class="output-display text-sm">Output will appear here...</div>
-                </div>` : '';
-
-            const colorHtml = project.isColorTool ? `
-                <div class="converter-box">
-                    <h4 class="font-bold text-indigo-800 mb-2">Color Preview Tool</h4>
-                    <div class="flex gap-4 items-center">
-                        <input type="color" oninput="updateColor(this.value)" class="h-12 w-20 cursor-pointer rounded">
-                        <input type="text" placeholder="Enter Hex (e.g. #2563eb)" oninput="updateColor(this.value)" class="flex-1 p-2 border rounded-lg font-mono">
-                    </div>
-                    <div id="colorPreview" style="background-color: #2563eb;"></div>
-                    <p id="colorLabel" class="text-center mt-2 text-xs font-mono text-gray-500">Current Color: #2563eb</p>
-                </div>` : '';
-
             app.innerHTML = `
-                <button onclick="switchView('list')" class="flex items-center mb-8 px-4 py-2 text-indigo-600 hover:text-indigo-800 transition rounded-lg hover:bg-indigo-50">
+                <button onclick="switchView('list')" class="flex items-center mb-8 px-4 py-2 text-indigo-600 hover:text-indigo-800 font-semibold transition rounded-lg hover:bg-indigo-50">
                     ← Back to Dashboard
                 </button>
 
-                <div id="detail-view" class="bg-white p-6 sm:p-10 rounded-2xl shadow-xl">
+                <div class="bg-white p-6 sm:p-10 rounded-2xl shadow-xl border border-gray-100">
                     <div class="text-5xl mb-4">${project.icon}</div>
                     <h2 class="text-4xl font-extrabold text-gray-900 mb-4">${project.title}</h2>
 
-                    <div class="flex flex-wrap gap-3 mb-6">
+                    <div class="flex flex-wrap gap-3 mb-8">
                         ${project.tech.map(t => `<span class="px-4 py-1 text-sm font-semibold text-white bg-indigo-600 rounded-full shadow-md">${t}</span>`).join('')}
                     </div>
                     
-                    ${converterHtml}
-                    ${colorHtml}
-                    ${renderScreenshot(project.screenshot)}
-                    ${renderVideo(project.video)}
+                    ${project.isConverter ? `
+                        <div class="converter-box">
+                            <h4 class="font-bold text-indigo-800 mb-2">Binary Converter Tool</h4>
+                            <textarea id="converterInput" class="w-full h-24 p-3 border rounded-lg font-mono mb-4 text-sm focus:ring-2 focus:ring-indigo-400 outline-none" placeholder="Type text here..."></textarea>
+                            <div class="flex gap-2">
+                                <button onclick="textToBinary()" class="bg-indigo-600 text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-indigo-700 transition flex-1">Text to Binary</button>
+                                <button onclick="binaryToText()" class="bg-green-600 text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-green-700 transition flex-1">Binary to Text</button>
+                            </div>
+                            <div id="converterOutput" class="output-display text-sm">Output will appear here...</div>
+                        </div>` : ''}
 
-                    <h3 class="text-2xl font-semibold text-gray-700 mt-8 mb-3 border-b pb-2">Project Overview</h3>
+                    ${project.isColorTool ? `
+                        <div class="converter-box">
+                            <h4 class="font-bold text-indigo-800 mb-2">Color Preview Tool</h4>
+                            <div class="flex gap-4 items-center">
+                                <input type="color" oninput="updateColor(this.value)" class="h-12 w-20 cursor-pointer rounded border-none">
+                                <input type="text" placeholder="#2563eb" oninput="updateColor(this.value)" class="flex-1 p-2 border rounded-lg font-mono outline-none focus:ring-2 focus:ring-indigo-400">
+                            </div>
+                            <div id="colorPreview" class="h-24 w-full rounded-lg mt-4 border border-gray-300 transition-colors" style="background-color: #2563eb;"></div>
+                            <p id="colorLabel" class="text-center mt-2 text-xs font-mono text-gray-500">Current Color: #2563eb</p>
+                        </div>` : ''}
+
+                    ${project.screenshot ? `
+                        <h3 class="text-2xl font-semibold text-gray-700 mt-10 mb-4 border-b pb-2">Screenshot</h3>
+                        <img src="${project.screenshot}" class="w-full rounded-lg shadow-xl border border-gray-200 mb-6" onerror="this.src='https://via.placeholder.com/800x450?text=Screenshot+Coming+Soon'"/>
+                    ` : ''}
+
+                    <h3 class="text-2xl font-semibold text-gray-700 mt-10 mb-4 border-b pb-2">Project Overview</h3>
                     <p class="text-gray-600 text-lg leading-relaxed">${project.description}</p>
 
-                    <h3 class="text-2xl font-semibold text-gray-700 mt-8 mb-3 border-b pb-2">Source Code / Links</h3>
-                    <a href="${project.repo}" target="_blank" class="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-lg shadow-sm text-white bg-green-600 hover:bg-green-700 transition">
-                       View Project Source
-                    </a>
+                    <div class="mt-10">
+                        <a href="${project.repo}" target="_blank" class="inline-flex items-center px-8 py-3 text-lg font-bold rounded-xl text-white bg-indigo-600 hover:bg-indigo-700 transition shadow-lg hover:shadow-indigo-200">
+                           View Project Source
+                        </a>
+                    </div>
                 </div>
             `;
         }
 
         window.switchView = (view, projectId = null) => {
-            currentView = view;
-            selectedProjectId = projectId;
-            app.style.opacity = 0;
+            app.classList.replace('opacity-100', 'opacity-0');
             setTimeout(() => {
-                if (currentView === 'list') renderProjectList();
-                else renderProjectDetail(selectedProjectId);
-                app.style.opacity = 1;
+                if (view === 'list') renderProjectList();
+                else renderProjectDetail(projectId);
+                app.classList.replace('opacity-0', 'opacity-100');
                 window.scrollTo({ top: 0, behavior: 'smooth' });
             }, 300);
         };
@@ -314,7 +307,7 @@
             renderProjectList(filtered);
         };
 
-        document.addEventListener('DOMContentLoaded', () => switchView('list'));
+        document.addEventListener('DOMContentLoaded', () => renderProjectList());
     </script>
 </body>
 </html>
